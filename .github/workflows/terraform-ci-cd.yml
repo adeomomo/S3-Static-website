@@ -1,0 +1,51 @@
+name: 'Terraform CI/CD'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  id-token:-write # Required for AWS OIDC token exchange
+  contents: read  # Required to check out code
+
+jobs:
+  terraform:
+    name: 'Terraform Plan & Apply'
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Authenticate to AWS via OIDC
+    - name: Authenticate to AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ap-southeast-2
+
+    # 3. Setup Terraform version
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.8.0
+
+    # 4. Terraform Init
+    - name: Terraform Init
+      run: terraform init
+
+    # 5. Terraform Validate
+    - name: Terraform Validate
+      run: terraform validate
+
+    # 6. Terraform Plan (Runs on PRs and pushes)
+    - name: Terraform Plan
+      run: terraform plan -no-color
+
+    # 7. Terraform Apply (Runs only on pushes to main branch)
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve

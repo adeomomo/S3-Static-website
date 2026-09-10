@@ -12,3 +12,6 @@ crash.*.log
 # Credentials / local configuration
 *.tfvars
 .env
+
+# Editor temporary files
+*.swp
