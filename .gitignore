@@ -1,9 +1,14 @@
 # Local Terraform directories
 .terraform/
+
+# Terraform state
 *.tfstate
 *.tfstate.backup
-.terraform.lock.h5
 
-# Credentials
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Credentials / local configuration
 *.tfvars
 .env
