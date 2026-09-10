@@ -1,0 +1,9 @@
+# Local Terraform directories
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.h5
+
+# Credentials
+*.tfvars
+.env
